@@ -16,7 +16,7 @@ def test_update_task_state_triggers_next_task():
     task2.refresh_from_db()
 
     assert task1.state == "completed"
-    assert task2.state == "in_progress"  # Task2 should now be in progress
+    assert task2.state == "in_progress"
 
 @pytest.mark.django_db
 def test_update_workflow_state_completes_workflow():

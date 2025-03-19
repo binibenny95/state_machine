@@ -8,7 +8,7 @@ from workflow.models import Workflow, Task, Link
 @pytest.mark.django_db
 def test_create_workflow():
     client = APIClient()
-    response = client.post("/api/workflows/", {"name": "Hiring", "description": "Hiring process"}, format="json")
+    response = client.post("/api/workflows/", {"name": "Hiring"}, format="json")
     assert response.status_code == 201
     assert response.data['name'] == "Hiring"
 

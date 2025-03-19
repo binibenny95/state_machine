@@ -1,5 +1,5 @@
 def update_workflow_state(workflow):
-    """ Update the workflow state based on its tasks """
+    """ Update the workflow state based on its tasks states"""
     all_tasks = workflow.tasks.all()
 
     if all(task.state == "completed" for task in all_tasks):
@@ -13,7 +13,7 @@ def update_workflow_state(workflow):
 
 
 def update_task_state(task, new_state):
-    """ Update the task state and trigger next task based on links """
+    """ Update the task state and trigger next task based on links and user input """
     task.state = new_state
     task.save()
 
