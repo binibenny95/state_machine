@@ -12,6 +12,7 @@ This is a CLI based State machine consisting of Workflows/Tasks in an Employee H
 - **States** :
   - pending
   - in_progress
+  - rejected
   - completed
 
 ## Technology Stack
@@ -31,6 +32,12 @@ This State Engine is developed using **Python** as the Coding Language. Other te
 - Add Tasks and manage its States.
 - Define link between each States , make it easy to transfer from one state to another.
 - Features are built in REST API.
+
+## Design
+
+The overall design concept is depicted in below diagram.
+
+![StateEngineDesign](design/StateEngine_Design.jpg)
 
 flow:
    
