@@ -81,10 +81,9 @@ flow:
 
 ### Testing via Python Shell
 
-(python manage.py runserver should be running)
-1. Make sure that python manage.py runserver is running and start the Python shell
-    `python manage.py shell`
+1. Make sure that python manage.py runserver is running and start the Python shell.
 
+       python manage.py shell
 2. Inside the shell, import workflow,links and task models.
 
          from workflow.models import Workflow, Task, Link
@@ -100,7 +99,6 @@ flow:
          print(workflow.state)
 
          #Expected output: 'pending'
-
 5. Create tasks under the workflow.
                               
        task1 = Task.objects.create(workflow=workflow, name="Introduction Call", state="pending")
@@ -110,17 +108,14 @@ flow:
        task3 = Task.objects.create(workflow=workflow, name="Technical Assessment", state="pending")
        
        task4 = Task.objects.create(workflow=workflow, name="Job Offer", state="pending")
-
 6. Verify the tasks.
 
        print(Task.objects.all())
-
 7.  Define links between the tasks.
 
         Link.objects.create(source=task1, target=task2)
         Link.objects.create(source=task2, target=task3)
         Link.objects.create(source=task3, target=task4)
-
 8. Start the workflow. State of the Task 'Introduction Call' changes from 'pending'' to 'in_progress'.
 
        start_workflow(workflow)
@@ -129,7 +124,6 @@ flow:
 
        task1.refresh_from_db()
        print(task1.state)`  # Expected output: in_progress
-
 9. Complete Task1 and verify if Task2 moves to "in_progress" automatically.
 
        update_task_state(task1, "completed")
@@ -139,7 +133,6 @@ flow:
 
        print(task1.state) # Expected output: 'completed'
        print(task2.state) # Expected output: 'in_progress'
-
 10. Repeat above steps till task4 , once all tasks are completed, the state of workflow Hiring changes from 'in_progres' to 'completed'.
     
         update_task_state(task2, "completed")
@@ -147,7 +140,6 @@ flow:
         update_task_state(task4, "completed")
         workflow.refresh_from_db()
         print(workflow.state) # Expected output: 'completed'
-
 
 ### API Endpoints(Testing with Postman)
 
@@ -157,7 +149,6 @@ flow:
 2. Create Tasks
    - POST /api/tasks/
    - Request body: {"workflow": 1, "name": "Call"}
-
 3. Repeat for Technical Interview, Technical Assessment and Job Offer tasks.
 4. Create Links
    - POST /api/links/
@@ -166,14 +157,11 @@ flow:
 6. Start a workflow.
    - POST /api/workflows/1/update_state/
    - {"state": "in_progress"} 
-   
 7. Workflow moves to in_progress.First Task - Introduction Call moves to in_progress.
-
 8. Update State of Task 1 as completed 
    - POST /api/tasks/1/update_state/
    - {"state": "completed"}
 9. Task Call moves to completed and hence the task Technical Interview moves to in_progress.
-
 10. Continue updating each task's state.Once the state of last task Job Offer is updated as completed, then the state of overall workflow should be automatically changed to completed.
 
 # Potential Improvements:
