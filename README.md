@@ -1,22 +1,36 @@
-# supplios_tech_task
- This is a CLI based hiring state machine , This machine have one workflow called Hiring , 
- and the tasks related to the hiring workflow are call, technical interview, assignment, offer.
- I will explain all the details below.
+# Employee Hiring - State Machine/Workflow Engine
 
-### How does my state machine works :
+## Overview
+This is a CLI based State machine consisting of Workflows/Tasks in an Employee Hiring process.It has one workflow called **Hiring** and its associated Tasks.
 
-Workflow: Hiring
-Tasks: [
-   Call,
-   Technical Interview,
-   Assignment,
-   Offer
-]
-States: [
-   Pending,
-   In Progress,
-   Completed
-]
+- **Workflow** : Hiring
+- **Tasks** :
+  - Introduction Call
+  - Technical Interview
+  - Technical Assessment
+  - Job Offer
+- **States** :
+  - pending
+  - in_progress
+  - completed
+
+## Technology Stack
+
+This State Engine is developed using **Python** as the Coding Language. Other technologies used along with Python are mentioned below:
+
+1. Django
+2. Django REST Framework
+3. SQLite (Database)
+4. Pytest (For code testing)
+5. PyCharm (IDE)
+6. Git/GitHub ( Version Control System)
+
+## Code Features
+
+- Create and manage workflow.
+- Add Tasks and manage its States.
+- Define link between each States , make it easy to transfer from one state to another.
+- Features are built in REST API.
 
 flow:
    
@@ -26,129 +40,143 @@ flow:
    - Likely , at the end when the last task  'offer' change its state from 'in_progess' to 'completed' , and workflow 'hiring'
      changes it state form 'in_progress' to 'complete'.
 
-# features :
 
-Create and manage workflow.
-Add tasks aad manage its state.
-Define link between each states , make it easy to transfer from one state to another.
-Features build in REST Api.
+## System Pre-requisites
 
-# Technologies used:
+- Python and PIP should be available.
+- All other requirements will be installed using pip
 
-Django
-Django REST Framework
-SQLite(database)
-pytest(for test)
+## Steps to use the code
 
-# **Installation:**
+1. Make a local copy of the code by cloning it from the GitHub Repository.
 
-1. Clone the gitrepo
-    `git clone git@github.com:binibenny95/supplios_tech_task.git
-    cd supplios_tech_task`
-2. Create a virtual environment(but it's optional)
-   ` python3 -m venv venv
-    source venv/bin/activate # on Linux`
-3. Install all packages required for the project.
+    `git clone git@github.com:binibenny95/supplios_tech_task.git`
+2. Change working directory to supplios_tech_task and create python virtual environment (recommended but optional)
+
+    `cd supplios_tech_task`
+
+   ` python3 -m venv venv`
+3. Source virtual environment 
+
+    `source venv/bin/activate`
+4. Install all required packages for this project
+
    `pip install -r requirements.txt`
-4. Run Migrations
-   ` python manage.py migrate`
-5. Run the developement server
-  ` python manage.py runserver `
-  (since we dont have UI , i used terminal/postman to test)
-6. create a superuser(optional)
-   ` python manage.py createsuperuser`
+5. Run Migrations
+
+    `python manage.py migrate`
+6. Run the development server
+
+    `python manage.py runserver`
+
+   - (since we dont have UI , I have used terminal/postman to test)
+7. Create a superuser(optional)
+
+   `python manage.py createsuperuser`
    
  You  can Access the admin interface at http://127.0.0.1:8000/admin/ 
  to create workflows, tasks, and links.
 
-# ****Test via Python shell****
+## Code Testing
+
+### Testing via Python Shell
 
 (python manage.py runserver should be running)
-1. `python manage.py shell`
-2. inside the shell , import workflow, link,task models.
+1. Make sure that python manage.py runserver is running and start the Python shell
+    `python manage.py shell`
 
-`   from workflow.models import Workflow, Task, Link
-   from workflow.services import update_task_state, start_workflow, update_workflow_state `
+2. Inside the shell, import workflow,links and task models.
+
+         from workflow.models import Workflow, Task, Link
+   
+         from workflow.services import update_task_state, start_workflow, update_workflow_state
 3. Create a workflow with the default state (pending)
    
-    `workflow = Workflow.objects.create(name="Hiring Workflow")
-    print(workflow)  # Should print: Hiring Workflow`
-4.  verify state 
-     `print(workflow.state) ` # Expected output: 'pending'
+         workflow = Workflow.objects.create(name="Hiring Workflow")
 
-5. create tasks under the workflow.
+         print(workflow)  # Should print: Hiring Workflow
+4.  Verify the State.
 
-`task1 = Task.objects.create(workflow=workflow, name="Call", state="pending")
-task2 = Task.objects.create(workflow=workflow, name="Technical Interview", state="pending")
-task3 = Task.objects.create(workflow=workflow, name="Assignment", state="pending")
-task4 = Task.objects.create(workflow=workflow, name="Offer", state="pending")`
+         print(workflow.state)
 
-6.` print(Task.objects.all()) ` # verify tasks.
+         #Expected output: 'pending'
 
-7.  Define link between the tasks together.
+5. Create tasks under the workflow.
+                              
+       task1 = Task.objects.create(workflow=workflow, name="Introduction Call", state="pending")
+       
+       task2 = Task.objects.create(workflow=workflow, name="Technical Interview", state="pending")
+       
+       task3 = Task.objects.create(workflow=workflow, name="Technical Assessment", state="pending")
+       
+       task4 = Task.objects.create(workflow=workflow, name="Job Offer", state="pending")
 
-  ` Link.objects.create(source=task1, target=task2)
-Link.objects.create(source=task2, target=task3)
-Link.objects.create(source=task3, target=task4)`
+6. Verify the tasks.
 
-8.Start the workflow. sate of  task 'call' cahnges from 'pending'' to 'in_progress'.
-  ` start_workflow(workflow)`
-  ` workflow.refresh_from_db()
-   print(workflow.state)`  # Expected output: in_progress
+       print(Task.objects.all())
 
-  ` task1.refresh_from_db()
-   print(task1.state)`  # Expected output: in_progress
+7.  Define links between the tasks.
 
-9. Complete task1 and verify if task2 moves to "in_progress" automatically.
-   `update_task_state(task1, "completed")`
+        Link.objects.create(source=task1, target=task2)
+        Link.objects.create(source=task2, target=task3)
+        Link.objects.create(source=task3, target=task4)
+
+8. Start the workflow. State of the Task 'Introduction Call' changes from 'pending'' to 'in_progress'.
+
+       start_workflow(workflow)
+       workflow.refresh_from_db()
+       print(workflow.state)# Expected output: in_progress
+
+       task1.refresh_from_db()
+       print(task1.state)`  # Expected output: in_progress
+
+9. Complete Task1 and verify if Task2 moves to "in_progress" automatically.
+
+       update_task_state(task1, "completed")
     
-     `task1.refresh_from_db()
-     task2.refresh_from_db()`
+       task1.refresh_from_db()
+       task2.refresh_from_db()`
 
-     `print(task1.state)`  # Expected output: 'completed'
-     `print(task2.state)`  # Expected output: 'in_progress'
-10. Repeat this for till task4 , once all tasks are completed workflow hiring state changes from 'in_progres' to 'completed'.
+       print(task1.state) # Expected output: 'completed'
+       print(task2.state) # Expected output: 'in_progress'
+
+10. Repeat above steps till task4 , once all tasks are completed, the state of workflow Hiring changes from 'in_progres' to 'completed'.
     
-    `update_task_state(task2, "completed")
-    update_task_state(task3, "completed")
-    update_task_state(task4, "completed")`
-  ` workflow.refresh_from_db()`
-   `print(workflow.state) ` # Expected output: 'completed'
+        update_task_state(task2, "completed")
+        update_task_state(task3, "completed")
+        update_task_state(task4, "completed")
+        workflow.refresh_from_db()
+        print(workflow.state) # Expected output: 'completed'
 
 
-# **API Endpoints(Test with Postman):**
+### API Endpoints(Testing with Postman)
 
-Workflows:
-1.Create Workflow
-   POST /api/workflows/
-   request body:
-   {"name": "Hiring"}
-2. create Tasks
-   POST /api/tasks/
-   request body:
-   {"workflow": 1, "name": "Call"}
- 
-   Repeat for Technical Interview, Assignment, and offer.
-3. Create Links
-   POST /api/links/
-   {"source": 1, "target": 2}
-   Repeat for the next tasks.
+1. Create Workflow
+   - POST /api/workflows/
+   - Request body: {"name": "Hiring"}
+2. Create Tasks
+   - POST /api/tasks/
+   - Request body: {"workflow": 1, "name": "Call"}
 
-4. Start a workflow.
-   POST /api/workflows/1/update_state/
-   {"state": "in_progress"} 
+3. Repeat for Technical Interview, Technical Assessment and Job Offer tasks.
+4. Create Links
+   - POST /api/links/
+   - {"source": 1, "target": 2}
+5. Repeat the same for the next tasks.
+6. Start a workflow.
+   - POST /api/workflows/1/update_state/
+   - {"state": "in_progress"} 
    
-Workflow moves to in_progress.First task call moves to in_progress.
+7. Workflow moves to in_progress.First Task - Introduction Call moves to in_progress.
 
-5.POST /api/tasks/1/update_state/
-  {"state": "completed"}
-  Task Call moves to completed.
-  Task Technical Interview moves to in_progress.
+8. Update State of Task 1 as completed 
+   - POST /api/tasks/1/update_state/
+   - {"state": "completed"}
+9. Task Call moves to completed and hence the task Technical Interview moves to in_progress.
 
-Continue updating each task's state, and
-once Offer is completed, the workflow should be marked as completed.
+10. Continue updating each task's state.Once the state of last task Job Offer is updated as completed, then the state of overall workflow should be automatically changed to completed.
 
-### Improvements:
+# Potential Improvements:
 
 1. UI to handle create,update,delete task, workflows,links.
 2. What will happens if there is two work flows , like once the hiring done it should auto trigger the next workflow onboarding .
