@@ -39,13 +39,14 @@ The overall design concept is depicted in below diagram.
 
 ![StateEngineDesign](design/StateEngine_Design.jpg)
 
-flow:
-   
-   - When we start the 'Hiring' to 'in_progress' state , the first task auto trigger and moves to 'in_progress'.
-   - But all other tasks like Technical Interview, Assignment,Offer are in 'pending' by default.
-   - When the 'Call' changes its state from 'in_progres' to 'completed', it trigger the next task 'technical interview ' to 'in_progress'.
-   - Likely , at the end when the last task  'offer' change its state from 'in_progess' to 'completed' , and workflow 'hiring'
-     changes it state form 'in_progress' to 'complete'.
+### Design Concepts
+
+- Workflow and Tasks have four different valid states - pending,in_progress,rejected and completed
+- Default state of all Tasks is pending.
+- When we start the 'Hiring' to 'in_progress' state , the first task auto trigger and moves to 'in_progress'.
+- When the 'Introduction Call' task changes its state from 'in_progres' to 'completed', it trigger the next task 'Technical interview ' to 'in_progress'.
+- Likely , at the end when the last task  'Job offer' change its state from 'in_progess' to 'completed' , the workflow 'hiring' changes it state form 'in_progress' to 'completed'.
+- If the state of any of the tasks is rejected then it will move the state of overall workflow also to rejected .The state of subsequent tasks will remain in its default value of pending.
 
 
 ## System Pre-requisites
@@ -148,6 +149,22 @@ flow:
         workflow.refresh_from_db()
         print(workflow.state) # Expected output: 'completed'
 
+11. Inorder to test the functionality of rejected state , mark any one of the tasks as rejected and verify
+
+   
+        update_task_state(task2, "rejected")
+    
+        task2.refresh_from_db()
+        task3.refresh_from_db()
+        task4.refresh_from_db()
+        workflow.refresh_from_db()
+
+        print(task2.state) # Expected output: 'rejected'
+        print(task3.state) # Expected output: 'pending'
+        print(task4.state) # Expected output: 'pending'
+        print(workflow.state) # Expected output: 'rejected'
+
+
 ### API Endpoints(Testing with Postman)
 
 1. Create Workflow
@@ -177,10 +194,8 @@ flow:
 # Potential Improvements:
 
 1. UI to handle create,update,delete task, workflows,links.
-2. What will happens if there is two work flows , like once the hiring done it should auto trigger the next workflow onboarding .
-3. A logging system like notifications/email to the admin whenever there is a change in task state and once the workflow completes.
-4. Can on task have multiple subtasks and states ?
-5. we can use django-fsm for state machine while creating models.
+2. A logging system like notifications/email to the admin whenever there is a change in task state and once the state of workflow changes.
+3. we can use django-fsm for state machine while creating models.
 
 
 
