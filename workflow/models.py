@@ -5,6 +5,7 @@ STATE_CHOICES = [
     ('pending', 'Pending'),
     ('in_progress', 'In Progress'),
     ('completed', 'Completed'),
+    ('rejected', 'Rejected'),
 ]
 
 class Workflow(models.Model):

@@ -155,18 +155,21 @@ flow:
    - Request body: {"name": "Hiring"}
 2. Create Tasks
    - POST /api/tasks/
-   - Request body: {"workflow": 1, "name": "Call"}
+   - Request body: {"workflow": {workflow_id}, "name": "Call"}
 3. Repeat for Technical Interview, Technical Assessment and Job Offer tasks.
 4. Create Links
    - POST /api/links/
-   - {"source": 1, "target": 2}
+   - {"source": {task_id}, "target": {task_id} + 1}
+   - ex : {"source": 9, "target": 10}
+   - {"source": 10, "target": 11}
+   - {"source": 11, "target": 12}
 5. Repeat the same for the next tasks.
 6. Start a workflow.
-   - POST /api/workflows/1/update_state/
+   - POST /api/workflows/{workflow_id}/update_state/
    - {"state": "in_progress"} 
 7. Workflow moves to in_progress.First Task - Introduction Call moves to in_progress.
 8. Update State of Task 1 as completed 
-   - POST /api/tasks/1/update_state/
+   - POST /api/tasks/{task_id}/update_state/
    - {"state": "completed"}
 9. Task Call moves to completed and hence the task Technical Interview moves to in_progress.
 10. Continue updating each task's state.Once the state of last task Job Offer is updated as completed, then the state of overall workflow should be automatically changed to completed.

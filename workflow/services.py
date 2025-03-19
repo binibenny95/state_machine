@@ -2,7 +2,9 @@ def update_workflow_state(workflow):
     """ Update the workflow state based on its tasks states"""
     all_tasks = workflow.tasks.all()
 
-    if all(task.state == "completed" for task in all_tasks):
+    if any(task.state == "rejected" for task in all_tasks):
+        workflow.state = "rejected"
+    elif all(task.state == "completed" for task in all_tasks):
         workflow.state = "completed"
     elif any(task.state == "in_progress" for task in all_tasks):
         workflow.state = "in_progress"
@@ -16,6 +18,11 @@ def update_task_state(task, new_state):
     """ Update the task state and trigger next task based on links and user input """
     task.state = new_state
     task.save()
+
+    if new_state == "rejected":
+        # If a task is rejected, prevent next tasks from starting
+        update_workflow_state(task.workflow)
+        return
 
     # If a task moves to "completed", trigger the next task
     if new_state == "completed":
